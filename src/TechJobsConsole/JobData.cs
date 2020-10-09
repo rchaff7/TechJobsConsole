@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -13,7 +15,8 @@ namespace TechJobsConsole
         public static List<Dictionary<string, string>> FindAll()
         {
             LoadData();
-            return AllJobs;
+            List<Dictionary<string, string>> AllJobsCopy = AllJobs.ToList();
+            return AllJobsCopy;
         }
 
         /*
@@ -49,12 +52,30 @@ namespace TechJobsConsole
             {
                 string aValue = row[column];
 
-                if (aValue.Contains(value))
+                if (aValue.ToLower().Contains(value))
                 {
                     jobs.Add(row);
                 }
             }
+            return jobs;
+        }
 
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            LoadData();
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> posting in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> pair in posting)
+                {
+                    if (pair.Value.ToLower().Contains(value))
+                    {
+                        jobs.Add(posting);
+                        break;
+                    }
+                }
+            }
             return jobs;
         }
 
